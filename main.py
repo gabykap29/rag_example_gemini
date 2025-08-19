@@ -137,7 +137,7 @@ os.environ["GOOGLE_API_KEY"] = api_key
 
 def generate_response_stream(context, materia, unidad_tematica, evidencia, nivel):
     llm = ChatGoogleGenerativeAI(
-        model="gemini-2.5-flash",
+        model="gemini-2.0-flash",
         temperature=0.2,
         max_tokens=2000,
         top_p=0.9,
