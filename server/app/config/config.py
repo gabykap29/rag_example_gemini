@@ -8,3 +8,4 @@ api_key = os.getenv("API_KEY")
 pdf_directory = "./documents"
 db_directory = "./app/db"
 model = os.getenv("MODEL")
+model_name = os.getenv("MODEL_NAME")

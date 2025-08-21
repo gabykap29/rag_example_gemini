@@ -11,8 +11,7 @@ router = APIRouter(tags=["Generate"], prefix="/generate")
 async def generate(request: GenerateRequest = Body(...)):
     """
     Genera una actividad educativa basada en el contexto y parámetros proporcionados.
-    
-    - **context**: Texto o contexto para generar la actividad (opcional)
+
     - **materia**: Materia o asignatura
     - **unidad_tematica**: Unidad temática o tema específico
     - **evidencia**: Tipo de evidencia o actividad a generar
