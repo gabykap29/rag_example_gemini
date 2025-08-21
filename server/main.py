@@ -1,9 +1,17 @@
 from fastapi import FastAPI
 from app.api.endpoints import generate, documents
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.openapi.docs import get_swagger_ui_html
+from fastapi.openapi.utils import get_openapi
 
 
-app = FastAPI()
+app = FastAPI(
+    title="RAG API",
+    description="API para generar actividades educativas utilizando RAG (Retrieval Augmented Generation)",
+    version="1.0.0",
+    docs_url="/docs",
+    redoc_url="/redoc",
+)
 
 app.add_middleware(
     CORSMiddleware,

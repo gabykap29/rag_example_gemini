@@ -7,3 +7,4 @@ api_key = os.getenv("API_KEY")
 
 pdf_directory = "./documents"
 db_directory = "./app/db"
+model = os.getenv("MODEL")

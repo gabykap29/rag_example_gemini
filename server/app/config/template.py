@@ -8,8 +8,8 @@ INPUTS:
 - Nivel: 1=Basico-Bajo | 2=Basico | 3=Satisfactorio | 4=Avanzado
 
 OUTPUT:
-Responde ÚNICAMENTE con un objeto JSON válido, lo que retornes se convertira directamente a JSON, asi que no incluyas nada antes de las llaves ni después.
-
+IMPORTANTE: Responde ÚNICAMENTE con el contenido del reporte, SIN usar bloques de código markdown (```). 
+El output debe ser markdown directo sin envolverlo en bloques de código.
 El JSON debe seguir esta estructura:
 
 {{

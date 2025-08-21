@@ -1,17 +1,31 @@
 from app.services.generate import generate_response
+from fastapi import APIRouter, Request, Body
+from app.models.generate import GenerateRequest, GenerateResponse
+from fastapi.responses import JSONResponse
 
-from fastapi import APIRouter, Request
+router = APIRouter(tags=["Generate"], prefix="/generate")
 
-router = APIRouter()
-
-@router.post("/generate")
-async def generate(request: Request):
-    data = await request.json()
-    context = data["context"]
-    materia = data["materia"]
-    unidad_tematica = data["unidad_tematica"]
-    evidencia = data["evidencia"]
-    nivel = data["nivel"]
-    response = generate_response(context, materia, unidad_tematica, evidencia, nivel)
-    return {"response": response}
+@router.post("", response_model=GenerateResponse, status_code=200,
+            summary="Generar actividad educativa",
+            description="Genera una actividad educativa basada en el contexto y parámetros proporcionados")
+async def generate(request: GenerateRequest = Body(...)):
+    """
+    Genera una actividad educativa basada en el contexto y parámetros proporcionados.
+    
+    - **context**: Texto o contexto para generar la actividad (opcional)
+    - **materia**: Materia o asignatura
+    - **unidad_tematica**: Unidad temática o tema específico
+    - **evidencia**: Tipo de evidencia o actividad a generar
+    - **nivel**: Nivel de dificultad
+    
+    Returns:
+        Un objeto JSON con la actividad generada en formato estructurado
+    """
+    response = generate_response(
+        request.materia, 
+        request.unidad_tematica, 
+        request.evidencia, 
+        request.nivel
+    )
+    return GenerateResponse(response=response)
 
