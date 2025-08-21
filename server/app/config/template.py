@@ -98,7 +98,7 @@ Recibirás exactamente estos parámetros:
   "DificultadItem": "Muy Alta",
 
   "TiempoEstimado": "01:00",
- 
+
   "Opciones": {
     "A": "Proporcionar soporte estructural y proteger la médula espinal",
     "B": "Producir glóbulos rojos y blancos en el cuerpo", 

@@ -3,13 +3,16 @@ from langchain.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from app.config.config import api_key
 from app.config.template import custom_template
-from ollama import chat, ChatResponse
+from ollama import Client, ChatResponse, chat
 from app.utils.filters import filter_markdown
 from app.config.config import model
 
 
 def generate_response_stream(context, materia, unidad_tematica, evidencia, nivel):
-    if model == "ollama": 
+    if model == "OLLAMA": 
+        client = Client(
+            host="http://ollama:11434",
+        )
         response: ChatResponse = chat(
             model= "medicina", messages=[
                 {

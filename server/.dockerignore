@@ -1,0 +1,30 @@
+# Archivos y directorios de Git
+.git
+.gitignore
+
+# Archivos de Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+
+
+# Directorios de base de datos y documentos
+app/db/*
+
+# Archivos de Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Scripts de inicio
+start.sh
+start.ps1
+
+# Otros
+.DS_Store
+*.log

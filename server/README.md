@@ -69,11 +69,72 @@ Este comando creará un modelo personalizado llamado `medicina` utilizando las i
 
 ## Ejecución del servidor
 
+### Opción 1: Ejecución local
+
 ```bash
 uvicorn main:app --reload
 ```
 
 El servidor estará disponible en `http://localhost:8000`.
+
+### Opción 2: Ejecución con Docker Compose
+
+Se incluye una configuración de Docker Compose que facilita el despliegue del servidor junto con Ollama:
+
+#### Pasos para la instalación con Docker Compose:
+
+1. Asegúrate de tener Docker y Docker Compose instalados en tu sistema
+
+2. Navega al directorio del servidor:
+
+```bash
+cd rag/server
+```
+
+3. Ejecuta Docker Compose para construir e iniciar los contenedores:
+
+```bash
+docker-compose up -d --build
+```
+
+4. Una vez que los contenedores estén en ejecución, necesitas instalar modelos adicionales. Abre Docker Desktop, ve a la sección "Containers", encuentra el contenedor de Ollama y accede a la pestaña "EXEC". Ejecuta los siguientes comandos:
+
+```bash
+# Instalar el modelo para embeddings
+ollama pull nomic-embed-text
+
+# Instalar el modelo base Gemma
+ollama pull gemma3
+
+# Crear el modelo personalizado para medicina
+ollama create medicina -f /prompt_system.txt
+```
+
+#### Alternativa usando scripts de inicio:
+
+#### En sistemas Linux/macOS:
+
+```bash
+chmod +x start.sh
+./start.sh
+```
+
+#### En sistemas Windows:
+
+```powershell
+.\start.ps1
+```
+
+Esto realizará las siguientes acciones:
+
+1. Creará los directorios necesarios
+2. Construirá la imagen Docker del servidor utilizando uv para una instalación rápida
+3. Iniciará los contenedores de Ollama y del servidor
+4. Creará automáticamente el modelo personalizado rag-edu en Ollama
+
+**Nota importante**: Después de usar los scripts de inicio, aún necesitarás instalar manualmente los modelos adicionales (nomic-embed-text y gemma3) como se describe en el paso 4 anterior.
+
+El servidor estará disponible en `http://localhost:8000` y Ollama en `http://localhost:11434`.
 
 ## Documentación de la API
 
