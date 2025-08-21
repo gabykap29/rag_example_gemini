@@ -1,8 +1,8 @@
-from config.config import pdf_directory
+from app.config.config import pdf_directory
 from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings import OllamaEmbeddings
 from langchain_community.document_loaders import PDFPlumberLoader
-from core.vectorstore import get_vector_stores
+from app.core.vectorstore import get_vector_stores
 import hashlib
 
 

@@ -1,7 +1,7 @@
 from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings import OllamaEmbeddings
 import chromadb
-from config.config import db_directory
+from app.config.config import db_directory
 
 
 def get_vector_stores(materia):

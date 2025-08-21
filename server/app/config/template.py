@@ -8,12 +8,14 @@ INPUTS:
 - Nivel: 1=Basico-Bajo | 2=Basico | 3=Satisfactorio | 4=Avanzado
 
 OUTPUT:
-- SOLO JSON válido con esta estructura:
+Responde ÚNICAMENTE con un objeto JSON válido, lo que retornes se convertira directamente a JSON, asi que no incluyas nada antes de las llaves ni después.
+
+El JSON debe seguir esta estructura:
 
 {{
-  "Titulo": "string ≤80",
+  "Titulo": "string, máximo 80 caracteres",
   "Consigna": "pregunta clara",
-  "Contexto": "string ≤200",
+  "Contexto": "string, máximo 200 caracteres",
   "Dificultad": "Basico-Bajo" | "Basico" | "Medio" | "Alto",
   "TiempoEstimado": "MM:SS (01:00-02:00)",
   "VectorNivelOpciones": {{

@@ -1,8 +1,7 @@
-from config.config import pdf_directory
+from app.config.config import pdf_directory
+from app.core.documents import is_pdf_already_indexed
 
-from core.documents import upload_pdf, load_pdf, index_docs, get_file_hash, retrieve_docs
-from core.vectorstore import is_pdf_already_indexed 
-
+from app.core.documents import load_pdf, index_docs, retrieve_docs
 
 
 def upload_pdf(file, subject):
