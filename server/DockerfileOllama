@@ -1,0 +1,7 @@
+FROM ollama/ollama:latest
+
+# Establecer directorio de trabajo
+WORKDIR /app
+
+# Comando para ejecutar la aplicación
+ENTRYPOINT ["ollama", "serve"]
