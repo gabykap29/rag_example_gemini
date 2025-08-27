@@ -2,7 +2,7 @@ from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings import OllamaEmbeddings
 import chromadb
 import os
-from app.config.config import db_directory
+from app.config.config import db_directory, ollama_url
 
 
 def get_vector_stores(materia):
@@ -13,7 +13,8 @@ def get_vector_stores(materia):
     collection_name = materia.lower().replace(" ", "_")
 
     # Inicializar embeddings
-    embeddings = OllamaEmbeddings(model="nomic-embed-text", base_url="http://ollama:11434")
+    embeddings = OllamaEmbeddings(model="nomic-embed-text", base_url=ollama_url)
+    # embeddings = OllamaEmbeddings(model="nomic-embed-text", base_url="http://ollama:11434")
     
     # Crear cliente persistente
     client = chromadb.PersistentClient(path=db_directory)

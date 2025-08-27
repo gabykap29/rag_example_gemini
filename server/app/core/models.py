@@ -5,13 +5,13 @@ from app.config.config import api_key
 from app.config.template import custom_template
 from ollama import Client, ChatResponse, chat
 from app.utils.filters import filter_markdown
-from app.config.config import model
-
+from app.config.config import model, ollama_url
 
 def generate_response_stream(context, materia, unidad_tematica, evidencia, nivel):
     if model == "OLLAMA": 
         client = Client(
-            host="http://ollama:11434",
+            host=ollama_url,
+            # host="http://ollama:11434",
         )
         response: ChatResponse = chat(
             model= "medicina", messages=[
