@@ -14,7 +14,6 @@ def get_vector_stores(materia):
 
     # Inicializar embeddings
     embeddings = OllamaEmbeddings(model="nomic-embed-text", base_url=ollama_url)
-    # embeddings = OllamaEmbeddings(model="nomic-embed-text", base_url="http://ollama:11434")
     
     # Crear cliente persistente
     client = chromadb.PersistentClient(path=db_directory)

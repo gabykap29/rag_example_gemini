@@ -7,17 +7,16 @@ from ollama import Client, ChatResponse, chat
 from app.utils.filters import filter_markdown
 from app.config.config import model, ollama_url
 
-def generate_response_stream(context, materia, unidad_tematica, evidencia, nivel):
+def generate_response_stream(context, carrera, año, materia, unidad_competencia, elemento_competencia, evidencia, nivel):
     if model == "OLLAMA": 
         client = Client(
             host=ollama_url,
-            # host="http://ollama:11434",
         )
         response: ChatResponse = chat(
             model= "medicina", messages=[
                 {
                     "role": "user",
-                    "content": f"Materia: {materia}, Unidad_Tematica: {unidad_tematica}, Evidencia: {evidencia}, Nivel: {nivel}, Contexto: {context}"
+                    "content": f"Carrera: {carrera}, Año: {año}, Materia: {materia}, Unidad_Competencia: {unidad_competencia}, Elemento_Competencia: {elemento_competencia}, Evidencia: {evidencia}, Nivel: {nivel}, Contexto: {context}"
                 }
             ], 
             stream=True,
@@ -36,14 +35,17 @@ def generate_response_stream(context, materia, unidad_tematica, evidencia, nivel
         )
         prompt = ChatPromptTemplate.from_messages([
             ("system", custom_template),
-            ("user", "Materia: {materia}, Unidad_Tematica: {unidad_tematica}, Evidencia: {evidencia}, Nivel: {nivel}, Contexto: {context}"),
+            ("user", "Carrera: {carrera}, Año: {año}, Materia: {materia}, Unidad_Competencia: {unidad_competencia}, Elemento_Competencia: {elemento_competencia}, Evidencia: {evidencia}, Nivel: {nivel}, Contexto: {context}"),
         ])
 
         chain = prompt | llm | StrOutputParser()
         
         input_dict = {
+            "carrera": carrera,
+            "año": año,
             "materia": materia,
-            "unidad_tematica": unidad_tematica,
+            "unidad_competencia": unidad_competencia,
+            "elemento_competencia":elemento_competencia,
             "evidencia": evidencia,
             "nivel": nivel,
             "context": context

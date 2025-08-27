@@ -17,10 +17,11 @@ Recibirás exactamente estos parámetros:
   - `Conocimiento`: Evalúa comprensión teórica y conceptual
   - `Procedimiento`: Evalúa aplicación de procesos y metodologías
   - `Producto`: Evalúa capacidad de generar resultados tangibles
-- **Nivel del Estudiante**:
-  - `1`: Básico (comprensión inicial, requiere apoyo)
-  - `2`: Satisfactorio (competencia intermedia, trabajo autónomo)
-  - `3`: Avanzado (dominio experto, análisis complejos)
+- **Dificultad del Item**:
+  - `1`: Basica 
+  - `2`: Media 
+  - `3`: Alta
+  - `4`: Muy Alta
 
 # ESPECIFICACIONES DE SALIDA
 
@@ -35,8 +36,9 @@ Recibirás exactamente estos parámetros:
   "Titulo": "string [máx 80 caracteres]",
   "Consigna": "string [pregunta clara y específica]",
   "Contexto": "string [información mínima necesaria, máx 200 caracteres]",
-  "DificultadItem": "Media" | "Alta" | "Muy Alta",
-  "TiempoEstimado": "string [formato MM:SS, rango 01:00-02:00]",
+  "DificultadItem": "Baja" | "Media" | "Alta" | "Muy Alta",
+  "informacionNivel": [string, string, string],
+  "TiempoEstimado": "string [formato MM:SS, rango 00:30-02:00]",
   "Opciones": {{
     "A": "string",
     "B": "string", 
@@ -56,20 +58,31 @@ Recibirás exactamente estos parámetros:
 
 ### VectorNivel
 - Un objeto con 4 propiedades, cada una un array de 3 elementos string
-- Los arrays deben contener un nivel de dificultad ("Bajo" | "Medio" | "Alto" | "Muy Alto") por cada una de las opciones.
+- Los arrays deben contener un nivel de dificultad ("Baja" | "Media" | "Alta" | "Muy Alta") por cada una de las opciones.
 - Cada nivel corresponde a la probabilidad de que un estudiante de cada nivel ("Basico" | "Satisfactorio" | "Avanzado") elija dicha opción.
 - Ten enfasis en la casuistica de las opciones y la coherencia entre las opciones para cada nivel.
 - Los arrays deben ser totalemente representativos a la realidad. 
 
 ### DificultadItem
-- Representa la dificultad que representa la pregunta para un alumno.
+- Representa la dificultad inherente de la pregunta.
+
+### Nivel de los estuadiantes
+- **Básico**: Comprensión básica, aplicación directa
+- **Satisfactorio**: Análisis, síntesis, aplicación en contexto
+- **Avanzado**: Evaluación crítica, integración compleja, transferencia
+
+### informacionNivel
+- Un arrays de strings de 3 posiciones
+- El array deben contener un nivel de información ("Baja" | "Media" | "Alta" | "Muy Alta") por cada uno de los niveles de estudiante
+- Posee la misma estructura que los arrays de VectorNivel
+- El nivel de informacion se refiere al aporte educativo que tiene la pregunta a un estudiante
 
 ## Criterios de Calidad Pedagógica
 
 ### Consigna
 - Formular como pregunta directa o instrucción específica
 - Alineada con la evidencia de competencia solicitada
-- Lenguaje apropiado para el nivel del estudiante
+- Lenguaje apropiado para el ambito universitario
 - Evitar ambigüedades o dobles interpretaciones
 
 ### Opciones
@@ -84,15 +97,10 @@ Recibirás exactamente estos parámetros:
 - Datos relevantes sin redundancia
 - Escenario realista cuando aplique
 
-### Nivel de los estuadiantes
-- **Básico**: Comprensión básica, aplicación directa
-- **Satisfactorio**: Análisis, síntesis, aplicación en contexto
-- **Avanzado**: Evaluación crítica, integración compleja, transferencia
-
 # RESTRICCIONES TÉCNICAS
 - JSON válido y parseable
 - Codificación UTF-8
-- Sin comentarios en JSO
+- Sin comentarios en JSON
 
 ### EJEMPLO DE RESPUESTA ESPERADA POR CADA NIVEL DE DIFICULTAD DEL ITEM:
 
@@ -104,7 +112,7 @@ Recibirás exactamente estos parámetros:
 
   "Contexto": "El sistema circulatorio distribuye oxígeno y nutrientes a través de la sangre.",
 
-  "DificultadItem": "Bajo",
+  "DificultadItem": "Baja",
 
   "TiempoEstimado": "00:30",
 
@@ -116,10 +124,10 @@ Recibirás exactamente estos parámetros:
   },
 
   "VectorNivel": {
-    "A": [ "Bajo", "Bajo", "Bajo" ],
-    "B": [ "Alto", "Muy Alto", "Muy Alto" ],
-    "C": [ "Medio", "Bajo", "Bajo" ],
-    "D": [ "Medio", "Bajo", "Bajo" ]
+    "A": [ "Baja", "Baja", "Baja" ],
+    "B": [ "Alta", "Muy Alta", "Muy Alta" ],
+    "C": [ "Media", "Baja", "Baja" ],
+    "D": [ "Media", "Baja", "Baja" ]
   },
 
   "RespuestaCorrecta": "B"
@@ -145,10 +153,10 @@ Recibirás exactamente estos parámetros:
   },
 
   "VectorNivel": {
-    "A": [ "Medio", "Alto", "Muy Alto" ],
-    "B": [ "Alto", "Medio", "Bajo" ],
-    "C": [ "Bajo", "Bajo", "Bajo" ],
-    "D": [ "Medio", "Bajo", "Bajo" ]
+    "A": [ "Media", "Alta", "Muy Alta" ],
+    "B": [ "Alta", "Media", "Baja" ],
+    "C": [ "Baja", "Baja", "Baja" ],
+    "D": [ "Media", "Baja", "Baja" ]
   },
 
   "RespuestaCorrecta": "A"
@@ -161,9 +169,9 @@ Recibirás exactamente estos parámetros:
 
   "Contexto": "En la práctica clínica, los signos vitales y la oxigenación guían el diagnóstico de urgencias respiratorias.",
 
-  "DificultadItem": "Alto",
+  "DificultadItem": "Alta",
 
-  "TiempoEstimado": "02:00",
+  "TiempoEstimado": "01:30",
 
   "Opciones": {
     "A": "Insuficiencia respiratoria aguda",
@@ -173,10 +181,10 @@ Recibirás exactamente estos parámetros:
   },
 
   "VectorNivel": {
-    "A": [ "Medio", "Alto", "Muy Alto" ],
-    "B": [ "Alto", "Medio", "Bajo" ],
-    "C": [ "Medio", "Bajo", "Bajo" ],
-    "D": [ "Bajo", "Bajo", "Bajo" ]
+    "A": [ "Media", "Alta", "Muy Alta" ],
+    "B": [ "Alta", "Media", "Baja" ],
+    "C": [ "Media", "Baja", "Baja" ],
+    "D": [ "Media", "Baja", "Baja" ]
   },
 
   "RespuestaCorrecta": "A"
@@ -192,7 +200,7 @@ Recibirás exactamente estos parámetros:
 
   "DificultadItem": "Muy Alta",
 
-  "TiempoEstimado": "03:00",
+  "TiempoEstimado": "02:00",
 
   "Opciones": {
     "A": "Acidosis metabólica compensada",
@@ -202,10 +210,10 @@ Recibirás exactamente estos parámetros:
   },
 
   "VectorNivel": {
-    "A": [ "Medio", "Medio", "Bajo" ],
-    "B": [ "Medio", "Alto", "Muy Alto" ],
-    "C": [ "Bajo", "Bajo", "Bajo" ],
-    "D": [ "Medio", "Bajo", "Bajo" ]
+    "A": [ "Media", "Media", "Baja" ],
+    "B": [ "Baja", "Media", "Muy Alta" ],
+    "C": [ "Media", "Baja", "Baja" ],
+    "D": [ "Muy Alta", "Media", "Baja" ]
   },
 
   "RespuestaCorrecta": "B"

@@ -21,10 +21,13 @@ async def generate(request: GenerateRequest = Body(...)):
         Un objeto JSON con la actividad generada en formato estructurado
     """
     response = generate_response(
+        request.carrera,
+        request.anio,
         request.materia, 
-        request.unidad_tematica, 
+        request.unidad_competencia, 
+        request.elemento_competencia,
         request.evidencia, 
-        request.nivel
+        request.nivel,
     )
     return GenerateResponse(response=response)
 
