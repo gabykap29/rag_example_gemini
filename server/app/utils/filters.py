@@ -27,3 +27,11 @@ def filter_markdown(text: str ) -> str:
 
     return cleaned_text
 
+
+def filtrar_consigna(response: str) -> str:
+    """
+    Filtra la consigna de la respuesta.
+    """
+    patron = r'"Consigna"\s*:\s*"([^"]+)"'
+
+    return re.search(patron, response, re.IGNORECASE).group(1)

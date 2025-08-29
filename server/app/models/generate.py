@@ -1,5 +1,4 @@
 from pydantic import BaseModel
-from typing import List, Optional
 
 class GenerateRequest(BaseModel):
     context: str = "" 
@@ -11,7 +10,6 @@ class GenerateRequest(BaseModel):
     class Config:
         schema_extra = {
             "example": {
-                "context": "Contenido del documento o contexto para generar la actividad",
                 "materia": "Matemáticas",
                 "unidad_tematica": "Álgebra",
                 "evidencia": "Examen",
