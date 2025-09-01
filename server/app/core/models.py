@@ -7,7 +7,7 @@ from ollama import Client, ChatResponse, chat
 from app.utils.filters import filter_markdown
 from app.config.config import model, ollama_url
 
-def generate_response_stream(context, materia, unidad_tematica, evidencia, nivel, questions_list):
+def generate_response_stream(carrera, anio, materia, unidad_competencia, elemento_competencia, evidencia, nivel, context, questions_list):
     if model == "OLLAMA": 
         client = Client(
             host=ollama_url,
@@ -16,7 +16,7 @@ def generate_response_stream(context, materia, unidad_tematica, evidencia, nivel
             model= "medicina", messages=[
                 {
                     "role": "user",
-                    "content": f"Materia: {materia}, Unidad_Tematica: {unidad_tematica}, Evidencia: {evidencia}, Nivel: {nivel}, Contexto: {context}, Preguntas: {questions_list}"
+                    "content": f"Carrera: {carrera}, Año: {anio}, Materia: {materia}, Unidad_Competencia: {unidad_competencia}, Elemento_Competencia: {elemento_competencia}, Evidencia: {evidencia}, Nivel: {nivel}, Contexto: {context}, Preguntas: {questions_list}"
                 }
             ], 
             stream=True,
@@ -34,14 +34,14 @@ def generate_response_stream(context, materia, unidad_tematica, evidencia, nivel
         )
         prompt = ChatPromptTemplate.from_messages([
             ("system", custom_template),
-            ("user", "Materia: {materia}, Unidad_Tematica: {unidad_tematica}, Evidencia: {evidencia}, Nivel: {nivel}, Contexto: {context},  Preguntas Previas: {questions_list}"),
+            ("user", "Carrera: {carrera}, Año: {anio}, Materia: {materia}, Unidad_Competencia: {unidad_competencia}, Elemento_Competencia: {elemento_competencia}, Evidencia: {evidencia}, Nivel: {nivel}, Contexto: {context},  Preguntas Previas: {questions_list}"),
         ])
 
         chain = prompt | llm | StrOutputParser()
         
         input_dict = {
             "carrera": carrera,
-            "año": año,
+            "anio": anio,
             "materia": materia,
             "unidad_competencia": unidad_competencia,
             "elemento_competencia":elemento_competencia,

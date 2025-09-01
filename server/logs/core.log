@@ -1,0 +1,22 @@
+2025-09-01 11:50:37 - app.core - INFO - 21732 - 3012 - Recuperando documentos para consulta en colección: anatomia
+2025-09-01 11:50:39 - app.core - ERROR - 21732 - 3012 - Error al recuperar documentos: Error raised by inference endpoint: HTTPConnectionPool(host='ollama', port=11434): Max retries exceeded with url: /api/embeddings (Caused by NameResolutionError("<urllib3.connection.HTTPConnection object at 0x000001F7AEECDE80>: Failed to resolve 'ollama' ([Errno 11001] getaddrinfo failed)"))
+2025-09-01 11:51:41 - app.core - INFO - 22512 - 22436 - Recuperando documentos para consulta en colección: anatomia
+2025-09-01 11:51:45 - app.core - WARNING - 22512 - 22436 - No se encontraron documentos relevantes para la consulta en 3.88s
+2025-09-01 11:53:28 - app.core - INFO - 12260 - 2600 - Recuperando documentos para consulta en colección: anatomia
+2025-09-01 11:53:30 - app.core - WARNING - 12260 - 2600 - No se encontraron documentos relevantes para la consulta en 2.23s
+2025-09-01 11:57:06 - app.core - INFO - 1564 - 21196 - Recuperando documentos para consulta en colección: anatomia
+2025-09-01 11:57:09 - app.core - WARNING - 1564 - 21196 - No se encontraron documentos relevantes para la consulta en 2.22s
+2025-09-01 11:57:35 - app.core - INFO - 17536 - 18504 - Recuperando documentos para consulta en colección: anatomia
+2025-09-01 11:57:38 - app.core - WARNING - 17536 - 18504 - No se encontraron documentos relevantes para la consulta en 2.22s
+2025-09-01 11:59:35 - app.core - INFO - 4440 - 4852 - Recuperando documentos para consulta en colección: anatomia
+2025-09-01 11:59:38 - app.core - WARNING - 4440 - 4852 - No se encontraron documentos relevantes para la consulta en 2.24s
+2025-09-01 12:03:01 - app.core - INFO - 3124 - 9596 - Recuperando documentos para consulta en colección: anatomia
+2025-09-01 12:03:03 - app.core - WARNING - 3124 - 9596 - No se encontraron documentos relevantes para la consulta en 2.21s
+2025-09-01 12:03:08 - app.core - INFO - 3124 - 9596 - Verificando preguntas similares - Materia: anatomia, Unidad: sistema oseo
+2025-09-01 12:03:08 - app.core - ERROR - 3124 - 9596 - Error al recuperar preguntas: Validation error: name: Expected a name containing 3-512 characters from [a-zA-Z0-9._-], starting and ending with a character in [a-zA-Z0-9]. Got: anatomia_sistema oseo
+2025-09-01 12:06:01 - app.core - INFO - 196 - 3088 - Recuperando documentos para consulta en colección: anatomia
+2025-09-01 12:06:04 - app.core - WARNING - 196 - 3088 - No se encontraron documentos relevantes para la consulta en 2.22s
+2025-09-01 12:06:07 - app.core - INFO - 196 - 3088 - Verificando preguntas similares - Materia: anatomia, Unidad: sistema oseo
+2025-09-01 12:06:09 - app.core - INFO - 196 - 3088 - No se encontraron preguntas similares en 2.16s
+2025-09-01 12:06:09 - app.core - INFO - 196 - 3088 - Indexando nueva pregunta - Materia: anatomia, Unidad: sistema oseo
+2025-09-01 12:06:11 - app.core - INFO - 196 - 3088 - Pregunta indexada correctamente en 2.23s

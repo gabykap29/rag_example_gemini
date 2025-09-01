@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 class GenerateRequest(BaseModel):
     context: str = "" 
@@ -14,10 +14,14 @@ class GenerateRequest(BaseModel):
         populate_by_name = True
         schema_extra = {
             "example": {
-                "materia": "Matemáticas",
-                "unidad_tematica": "Álgebra",
-                "evidencia": "Examen",
-                "nivel": "Medio"
+                "context": "Contenido del documento o contexto para generar la actividad",
+                "carrera": "Medicina",
+                "año": "1er Año",
+                "materia": "Anatomía",
+                "unidad_competencia": "Sistema Musculoesquelético",
+                "elemento_competencia": "Arquitectura Ósea",
+                "evidencia": "Conocimiento",
+                "nivel": "Media"
             }
         }
 

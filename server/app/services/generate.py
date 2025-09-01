@@ -13,13 +13,13 @@ def generate_response(carrera, anio, materia, unidad_competencia, elemento_compe
     service_logger.info(
         f"Iniciando generación de respuesta - "
         f"Materia: {materia}, "
-        f"Unidad: {unidad_tematica}, "
+        f"Unidad: {unidad_competencia}, "
         f"Evidencia: {evidencia}, "
         f"Nivel: {nivel}"
     )
     
-    service_logger.info(f"Recuperando documentos relevantes para unidad: {unidad_tematica} en materia: {materia}")
-    context = retrieve_docs(unidad_tematica, materia)
+    service_logger.info(f"Recuperando documentos relevantes para unidad: {unidad_competencia} en materia: {materia}")
+    context = retrieve_docs(unidad_competencia, materia)
     service_logger.info(f"Recuperados {len(context)} documentos relevantes")
 
     tries = 0
@@ -34,7 +34,7 @@ def generate_response(carrera, anio, materia, unidad_competencia, elemento_compe
         service_logger.info("Iniciando stream de generación de respuesta")
         chunks = []
         for chunk in generate_response_stream(
-            context, materia, unidad_tematica, evidencia, nivel, questions_list
+            carrera, anio, materia, unidad_competencia, elemento_competencia, evidencia, nivel, context, questions_list
         ):
             chunks.append(chunk)
         
@@ -43,11 +43,11 @@ def generate_response(carrera, anio, materia, unidad_competencia, elemento_compe
         service_logger.debug(f"Respuesta generada con {len(full_response)} caracteres")
         
         service_logger.info("Verificando si la respuesta ya existe en la base de datos")
-        questions = retrieve_questions(response_filter, materia, unidad_tematica)
+        questions = retrieve_questions(response_filter, materia, unidad_competencia)
 
         if len(questions) == 0:  
             service_logger.info("Respuesta única encontrada, indexando en la base de datos")
-            index_questions(response_filter, materia, unidad_tematica)
+            index_questions(response_filter, materia, unidad_competencia)
             
             total_time = time.time() - start_time
             service_logger.info(f"Generación completada en {total_time:.2f}s después de {tries} intentos")

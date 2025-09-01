@@ -16,7 +16,7 @@ async def generate(request: GenerateRequest = Body(...)):
     Genera una actividad educativa basada en el contexto y parámetros proporcionados.
 
     - **materia**: Materia o asignatura
-    - **unidad_tematica**: Unidad temática o tema específico
+    - **unidad_competencia**: Unidad temática o tema específico
     - **evidencia**: Tipo de evidencia o actividad a generar
     - **nivel**: Nivel de dificultad
     
@@ -31,7 +31,7 @@ async def generate(request: GenerateRequest = Body(...)):
     api_logger.info(
         f"Solicitud de generación recibida [ID: {request_id}] - "
         f"Materia: {request.materia}, "
-        f"Unidad: {request.unidad_tematica}, "
+        f"Unidad: {request.unidad_competencia}, "
         f"Evidencia: {request.evidencia}, "
         f"Nivel: {request.nivel}"
     )
@@ -39,8 +39,11 @@ async def generate(request: GenerateRequest = Body(...)):
     try:
         # Procesar la solicitud
         response = generate_response(
+            request.carrera,
+            request.anio,
             request.materia, 
-            request.unidad_tematica, 
+            request.unidad_competencia, 
+            request.elemento_competencia,
             request.evidencia, 
             request.nivel
         )
