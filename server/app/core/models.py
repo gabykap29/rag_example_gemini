@@ -7,7 +7,7 @@ from ollama import Client, ChatResponse, chat
 from app.utils.filters import filter_markdown
 from app.config.config import model, ollama_url
 
-def generate_response_stream(context, carrera, año, materia, unidad_competencia, elemento_competencia, evidencia, nivel):
+def generate_response_stream(context, materia, unidad_tematica, evidencia, nivel, questions_list):
     if model == "OLLAMA": 
         client = Client(
             host=ollama_url,
@@ -16,7 +16,7 @@ def generate_response_stream(context, carrera, año, materia, unidad_competencia
             model= "medicina", messages=[
                 {
                     "role": "user",
-                    "content": f"Carrera: {carrera}, Año: {año}, Materia: {materia}, Unidad_Competencia: {unidad_competencia}, Elemento_Competencia: {elemento_competencia}, Evidencia: {evidencia}, Nivel: {nivel}, Contexto: {context}"
+                    "content": f"Materia: {materia}, Unidad_Tematica: {unidad_tematica}, Evidencia: {evidencia}, Nivel: {nivel}, Contexto: {context}, Preguntas: {questions_list}"
                 }
             ], 
             stream=True,
@@ -28,14 +28,13 @@ def generate_response_stream(context, carrera, año, materia, unidad_competencia
     else: 
         llm = ChatGoogleGenerativeAI(
             model="gemini-2.0-flash",
-            temperature=0.4,
+            temperature=0.6,
             max_tokens=2000,
-            top_p=0.9,
             google_api_key=api_key,
         )
         prompt = ChatPromptTemplate.from_messages([
             ("system", custom_template),
-            ("user", "Carrera: {carrera}, Año: {año}, Materia: {materia}, Unidad_Competencia: {unidad_competencia}, Elemento_Competencia: {elemento_competencia}, Evidencia: {evidencia}, Nivel: {nivel}, Contexto: {context}"),
+            ("user", "Materia: {materia}, Unidad_Tematica: {unidad_tematica}, Evidencia: {evidencia}, Nivel: {nivel}, Contexto: {context},  Preguntas Previas: {questions_list}"),
         ])
 
         chain = prompt | llm | StrOutputParser()
@@ -48,9 +47,9 @@ def generate_response_stream(context, carrera, año, materia, unidad_competencia
             "elemento_competencia":elemento_competencia,
             "evidencia": evidencia,
             "nivel": nivel,
-            "context": context
+            "context": context,
+            "questions_list": questions_list
         }
-        print("Input dictionary:", input_dict)
         
         for chunk in chain.stream(input_dict):
             chunk = filter_markdown(chunk)
