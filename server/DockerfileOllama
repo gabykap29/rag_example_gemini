@@ -1,7 +1,9 @@
 FROM ollama/ollama:latest
 
-# Establecer directorio de trabajo
 WORKDIR /app
 
-# Comando para ejecutar la aplicación
-ENTRYPOINT ["ollama", "serve"]
+# Copiar script
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
