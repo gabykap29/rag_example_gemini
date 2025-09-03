@@ -4,7 +4,7 @@ from app.utils.filters import filtrar_consigna
 from app.utils.logging import service_logger
 import time
 
-def generate_response(carrera, anio, materia, unidad_competencia, elemento_competencia, evidencia, nivel):
+def generate_response(carrera: str, anio:str, materia:str, unidad_competencia:str, elemento_competencia:str, evidencia:str, nivel:str):
     """
     Genera una respuesta completa consumiendo el generador de respuestas.
     Si la pregunta ya existe en la base, vuelve a generar hasta obtener una nueva.
@@ -29,6 +29,7 @@ def generate_response(carrera, anio, materia, unidad_competencia, elemento_compe
         iteration_start = time.time()
         tries += 1
         service_logger.info(f"Intento #{tries} de generación de respuesta")
+        possibly_repeated = False
         
         # Generar respuesta
         service_logger.info("Iniciando stream de generación de respuesta")
@@ -51,7 +52,7 @@ def generate_response(carrera, anio, materia, unidad_competencia, elemento_compe
             
             total_time = time.time() - start_time
             service_logger.info(f"Generación completada en {total_time:.2f}s después de {tries} intentos")
-            return full_response
+            return full_response, possibly_repeated
         else:
             iteration_time = time.time() - iteration_start
             service_logger.warning(
@@ -61,12 +62,14 @@ def generate_response(carrera, anio, materia, unidad_competencia, elemento_compe
             )
             questions_list = questions_list + response_filter
 
-            if tries >= 5:
+            if tries >= 2:
+                possibly_repeated = True
                 service_logger.warning(
-                    f"Alcanzado límite máximo de intentos (5). "
+                    f"Alcanzado límite máximo de intentos (3). "
                     f"Retornando respuesta a pesar de posible duplicación."
                 )
                 total_time = time.time() - start_time
                 service_logger.info(f"Generación completada en {total_time:.2f}s después de {tries} intentos")
-                return full_response
+
+                return full_response, possibly_repeated
 

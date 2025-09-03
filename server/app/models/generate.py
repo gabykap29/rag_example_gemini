@@ -28,6 +28,7 @@ class GenerateRequest(BaseModel):
 
 class GenerateResponse(BaseModel):
     response: str
+    possibly_repeated: bool
     
     class Config:
         schema_extra = {

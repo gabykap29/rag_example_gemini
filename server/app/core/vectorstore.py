@@ -4,8 +4,7 @@ from langchain_community.embeddings import OllamaEmbeddings
 import chromadb
 import os
 from app.config.config import db_directory, ollama_url
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
-from app.config.config import api_key
+
 
 def sanitize_name(name: str) -> str:
     """Convierte cualquier cadena a un nombre válido para Chroma."""
@@ -18,7 +17,7 @@ def sanitize_name(name: str) -> str:
 def get_vector_stores(materia: str):
     os.makedirs(db_directory, exist_ok=True)
     collection_name = sanitize_name(materia)
-    embeddings = GoogleGenerativeAIEmbeddings(model= "models/gemini-embedding-001", google_api_key=api_key)
+    embeddings = OllamaEmbeddings(model="nomic-embed-text", base_url=ollama_url)
     client = chromadb.PersistentClient(path=db_directory)
     
     return Chroma(
@@ -31,7 +30,7 @@ def get_vector_stores(materia: str):
 def get_vector_store_cuestions(materia: str, unidad_elemento: str):
     os.makedirs(db_directory, exist_ok=True)
     collection_name = sanitize_name(f"{materia}_{unidad_elemento}")
-    embeddings = GoogleGenerativeAIEmbeddings(model= "models/gemini-embedding-001", google_api_key=api_key)
+    embeddings = OllamaEmbeddings(model="nomic-embed-text", base_url=ollama_url)
     client = chromadb.PersistentClient(path=db_directory)
 
     return Chroma(

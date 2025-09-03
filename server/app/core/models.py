@@ -9,7 +9,7 @@ from app.config.config import model, ollama_url
 
 def generate_response_stream(carrera, anio, materia, unidad_competencia, elemento_competencia, evidencia, nivel, context, questions_list):
     if model == "OLLAMA": 
-        client = Client(
+        Client(
             host=ollama_url,
         )
         response: ChatResponse = chat(
@@ -19,7 +19,6 @@ def generate_response_stream(carrera, anio, materia, unidad_competencia, element
                     "content": f"Carrera: {carrera}, Año: {anio}, Materia: {materia}, Unidad_Competencia: {unidad_competencia}, Elemento_Competencia: {elemento_competencia}, Evidencia: {evidencia}, Nivel: {nivel}, Contexto: {context}, Preguntas: {questions_list}"
                 }
             ], 
-            stream=True,
             format="json"
         )
         for chunk in response:
