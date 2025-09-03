@@ -72,7 +72,6 @@ def get_vector_stores(materia):
 def retrieve_docs(query, coleccion):
     vectorstore = get_vector_stores(coleccion)
     docs = vectorstore.similarity_search(query, k=5)
-    print("Retrieved documents:", len(docs))
     if docs:
         return docs
     else:
@@ -104,7 +103,6 @@ def index_docs(documents, materia):
     vectorstore = get_vector_stores(materia)
     vectorstore.add_documents(documents)
     vectorstore.persist()
-    print("Documents indexed successfully. Numbers of documents:", len(documents))
 
 def get_file_hash(file_path):
     hasher = hashlib.sha256()
@@ -156,7 +154,6 @@ def generate_response_stream(context, materia, unidad_tematica, evidencia, nivel
         "nivel": nivel,
         "context": context
     }
-    print("Input dictionary:", input_dict)
     
     for chunk in chain.stream(input_dict):
         yield chunk 
@@ -176,10 +173,6 @@ if uploaded_file and coleccion:
         for doc in chunked_documents:
             doc.metadata["file_hash"] = file_hash
             doc.metadata["course_name"] = coleccion.lower().replace(" ", "_")
-
-            print("--- Documento a indexar ---")
-            print(doc.page_content)
-            print(doc.metadata)
         index_docs(chunked_documents)
         st.success("PDF subido y procesado correctamente.")
 
