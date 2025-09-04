@@ -44,9 +44,9 @@ def generate_response(carrera: str, anio:str, materia:str, unidad_competencia:st
         service_logger.debug(f"Respuesta generada con {len(full_response)} caracteres")
         
         service_logger.info("Verificando si la respuesta ya existe en la base de datos")
-        questions = retrieve_questions(response_filter, materia, unidad_competencia)
+        questions, score = retrieve_questions(response_filter, materia, unidad_competencia)
 
-        if len(questions) == 0:  
+        if score > 500:  
             service_logger.info("Respuesta única encontrada, indexando en la base de datos")
             index_questions(response_filter, materia, unidad_competencia)
             
