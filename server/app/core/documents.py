@@ -180,10 +180,11 @@ def retrieve_questions(query, materia, unidad_tematica):
             return docs, scores
         else:
             core_logger.info(f"No se encontraron preguntas similares en {process_time:.2f}s")
-            return []
+            return [], 0  
     except Exception as e:
         core_logger.error(f"Error al recuperar preguntas: {str(e)}")
-        raise
+        return [], 0    
+
 
 def index_questions(documents, materia, unidad_tematica):
     start_time = time.time()
