@@ -29,6 +29,7 @@ class GenerateRequest(BaseModel):
 class GenerateResponse(BaseModel):
     response: str
     possibly_repeated: bool
+    probability: float
     
     class Config:
         schema_extra = {

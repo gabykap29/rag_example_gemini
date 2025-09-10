@@ -38,7 +38,7 @@ async def generate(request: GenerateRequest = Body(...)):
     
     try:
         # Procesar la solicitud
-        response, possibly_repeated = generate_response(
+        response, possibly_repeated, probability = generate_response(
             request.carrera,
             request.anio,
             request.materia, 
@@ -57,7 +57,7 @@ async def generate(request: GenerateRequest = Body(...)):
             f"Tiempo: {process_time:.2f}s"
         )
         
-        return GenerateResponse(response=response, possibly_repeated = possibly_repeated)
+        return GenerateResponse(response=response, possibly_repeated = possibly_repeated, probability=probability)
     
     except Exception as e:
         # Logging de error

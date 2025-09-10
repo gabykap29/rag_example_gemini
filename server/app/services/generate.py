@@ -2,6 +2,7 @@ from app.core.documents import index_questions, retrieve_docs, retrieve_question
 from app.core.models import generate_response_stream
 from app.utils.filters import filtrar_consigna
 from app.utils.logging import service_logger
+from app.utils.probability import score_to_probability
 import time
 
 def generate_response(carrera: str, anio:str, materia:str, unidad_competencia:str, elemento_competencia:str, evidencia:str, nivel:str):
@@ -29,7 +30,9 @@ def generate_response(carrera: str, anio:str, materia:str, unidad_competencia:st
         iteration_start = time.time()
         tries += 1
         service_logger.info(f"Intento #{tries} de generación de respuesta")
+        
         possibly_repeated = False
+        probability = 0
         
         # Generar respuesta
         service_logger.info("Iniciando stream de generación de respuesta")
@@ -47,14 +50,16 @@ def generate_response(carrera: str, anio:str, materia:str, unidad_competencia:st
         questions, score = retrieve_questions(response_filter, materia, unidad_competencia)
 
         if score > 500:  
+            probability = 0
             service_logger.info("Respuesta única encontrada, indexando en la base de datos")
             index_questions(response_filter, materia, unidad_competencia)
             
             total_time = time.time() - start_time
             service_logger.info(f"Generación completada en {total_time:.2f}s después de {tries} intentos")
-            return full_response, possibly_repeated
+            return full_response, possibly_repeated, probability
         else:
             iteration_time = time.time() - iteration_start
+            probability = score_to_probability(score=score)
             service_logger.warning(
                 f"Respuesta duplicada encontrada en intento #{tries}. "
                 f"Tiempo de iteración: {iteration_time:.2f}s. "
@@ -71,5 +76,5 @@ def generate_response(carrera: str, anio:str, materia:str, unidad_competencia:st
                 total_time = time.time() - start_time
                 service_logger.info(f"Generación completada en {total_time:.2f}s después de {tries} intentos")
 
-                return full_response, possibly_repeated
+                return full_response, possibly_repeated, probability
 
