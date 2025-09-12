@@ -5,76 +5,74 @@ from app.utils.logging import service_logger
 from app.utils.probability import score_to_probability
 import time
 
-def generate_response(carrera: str, anio:str, materia:str, unidad_competencia:str, elemento_competencia:str, evidencia:str, nivel:str):
+def generate_response(carrera: str, anio: str, materia: str, unidad_competencia: str, 
+                     elemento_competencia: str, evidencia: str, nivel: str):
     """
-    Genera una respuesta completa consumiendo el generador de respuestas.
-    Si la pregunta ya existe en la base, vuelve a generar hasta obtener una nueva.
+    Genera una respuesta completa, verificando duplicados y re-intentando si es necesario.
+    Envía al modelo las preguntas ya generadas para evitar repeticiones.
+    
+    Returns:
+        tuple: (respuesta_completa, posible_repeticion, probabilidad_similitud)
     """
     start_time = time.time()
     service_logger.info(
-        f"Iniciando generación de respuesta - "
-        f"Materia: {materia}, "
-        f"Unidad: {unidad_competencia}, "
-        f"Evidencia: {evidencia}, "
-        f"Nivel: {nivel}"
+        f"Iniciando generación - Materia: {materia}, Unidad: {unidad_competencia}, "
+        f"Evidencia: {evidencia}, Nivel: {nivel}"
     )
     
-    service_logger.info(f"Recuperando documentos relevantes para unidad: {unidad_competencia} en materia: {materia}")
+    service_logger.info(f"Recuperando documentos para unidad: {unidad_competencia}")
     context = retrieve_docs(unidad_competencia, materia)
     service_logger.info(f"Recuperados {len(context)} documentos relevantes")
 
     tries = 0
-    questions_list = "PREGUNTAS YA GENERADAS: \n"
+    max_tries = 3
+    questions_list = "PREGUNTAS YA GENERADAS:\n"
 
-    while True:
+    while tries < max_tries:
         iteration_start = time.time()
         tries += 1
         service_logger.info(f"Intento #{tries} de generación de respuesta")
         
-        possibly_repeated = False
-        probability = 0
-        
-        # Generar respuesta
-        service_logger.info("Iniciando stream de generación de respuesta")
         chunks = []
         for chunk in generate_response_stream(
-            carrera, anio, materia, unidad_competencia, elemento_competencia, evidencia, nivel, context, questions_list
+            carrera, anio, materia, unidad_competencia, elemento_competencia, 
+            evidencia, nivel, context, questions_list
         ):
             chunks.append(chunk)
         
         full_response = "".join(chunks)
         response_filter = filtrar_consigna(full_response)
-        service_logger.debug(f"Respuesta generada con {len(full_response)} caracteres")
+        service_logger.debug(f"Respuesta generada: {len(full_response)} caracteres")
         
-        service_logger.info("Verificando si la respuesta ya existe en la base de datos")
+        service_logger.info("Verificando duplicados en base de datos")
         questions, score = retrieve_questions(response_filter, materia, unidad_competencia)
 
-        if score > 500:  
-            probability = 0
-            service_logger.info("Respuesta única encontrada, indexando en la base de datos")
+        probability = score_to_probability(score=score)
+
+
+        if probability < 50:  
+            service_logger.info("Respuesta única encontrada, indexando")
             index_questions(response_filter, materia, unidad_competencia)
             
             total_time = time.time() - start_time
-            service_logger.info(f"Generación completada en {total_time:.2f}s después de {tries} intentos")
-            return full_response, possibly_repeated, probability
-        else:
-            iteration_time = time.time() - iteration_start
-            probability = score_to_probability(score=score)
-            service_logger.warning(
-                f"Respuesta duplicada encontrada en intento #{tries}. "
-                f"Tiempo de iteración: {iteration_time:.2f}s. "
-                f"Intentando nuevamente..."
-            )
-            questions_list = questions_list + response_filter
-
-            if tries >= 2:
-                possibly_repeated = True
-                service_logger.warning(
-                    f"Alcanzado límite máximo de intentos (3). "
-                    f"Retornando respuesta a pesar de posible duplicación."
-                )
-                total_time = time.time() - start_time
-                service_logger.info(f"Generación completada en {total_time:.2f}s después de {tries} intentos")
-
-                return full_response, possibly_repeated, probability
-
+            service_logger.info(f"Generación completada en {total_time:.2f}s tras {tries} intentos")
+            return full_response, False, probability
+        
+        # Agregar pregunta duplicada a la lista para el próximo intento
+        questions_list += f"{response_filter}\n\n"
+        print("LO que se envia al modelo> ",          carrera, anio, materia, unidad_competencia, elemento_competencia, 
+            evidencia, nivel, context, questions_list)
+        iteration_time = time.time() - iteration_start
+        
+        
+        service_logger.warning(
+            f"Duplicado encontrado (similaridad: {probability:.1f}%) en intento #{tries}. "
+            f"Tiempo: {iteration_time:.2f}s. Reintentando..."
+        )
+    
+    # Se alcanzó el límite máximo de intentos
+    service_logger.warning(f"Límite de {max_tries} intentos alcanzado. Retornando última respuesta")
+    total_time = time.time() - start_time
+    service_logger.info(f"Generación completada en {total_time:.2f}s tras {tries} intentos")
+    
+    return full_response, True, probability
