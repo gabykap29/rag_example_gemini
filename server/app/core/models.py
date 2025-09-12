@@ -27,7 +27,7 @@ def generate_response_stream(carrera, anio, materia, unidad_competencia, element
     else: 
         llm = ChatGoogleGenerativeAI(
             model="gemini-2.0-flash",
-            temperature=0.6,
+            temperature=0.3,
             max_tokens=2000,
             google_api_key=api_key,
         )

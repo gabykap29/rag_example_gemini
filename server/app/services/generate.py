@@ -50,7 +50,7 @@ def generate_response(carrera: str, anio: str, materia: str, unidad_competencia:
         probability = score_to_probability(score=score)
 
 
-        if probability < 50:  
+        if probability < 70:  
             service_logger.info("Respuesta única encontrada, indexando")
             index_questions(response_filter, materia, unidad_competencia)
             
@@ -59,7 +59,7 @@ def generate_response(carrera: str, anio: str, materia: str, unidad_competencia:
             return full_response, False, probability
         
         # Agregar pregunta duplicada a la lista para el próximo intento
-        questions_list += f"{response_filter}\n\n"
+        questions_list += f"{questions}\n\n"
         print("LO que se envia al modelo> ",          carrera, anio, materia, unidad_competencia, elemento_competencia, 
             evidencia, nivel, context, questions_list)
         iteration_time = time.time() - iteration_start
