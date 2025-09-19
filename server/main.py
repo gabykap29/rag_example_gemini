@@ -1,8 +1,9 @@
 from fastapi import FastAPI
-from app.api.endpoints import generate, documents
+from app.api.endpoints import generate, documents, questions
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.openapi.utils import get_openapi
+
 
 
 app = FastAPI(
@@ -23,6 +24,7 @@ app.add_middleware(
 
 app.include_router(generate.router)
 app.include_router(documents.router)
+app.include_router(questions.router)
 
 
 

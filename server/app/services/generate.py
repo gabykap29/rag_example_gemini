@@ -58,21 +58,18 @@ def generate_response(carrera: str, anio: str, materia: str, unidad_competencia:
             service_logger.info(f"Generación completada en {total_time:.2f}s tras {tries} intentos")
             return full_response, False, probability
         
-        # Agregar pregunta duplicada a la lista para el próximo intento
-        questions_list += f"{questions}\n\n"
-        print("LO que se envia al modelo> ",          carrera, anio, materia, unidad_competencia, elemento_competencia, 
-            evidencia, nivel, context, questions_list)
-        iteration_time = time.time() - iteration_start
-        
-        
-        service_logger.warning(
+        else:
+            # Agregar pregunta duplicada a la lista para el próximo intento
+            questions_list += f"{questions}\n\n"
+            iteration_time = time.time() - iteration_start
+            service_logger.warning(
             f"Duplicado encontrado (similaridad: {probability:.1f}%) en intento #{tries}. "
             f"Tiempo: {iteration_time:.2f}s. Reintentando..."
-        )
+            )
+            # Se alcanzó el límite máximo de intentos
+            service_logger.warning(f"Límite de {max_tries} intentos alcanzado. Retornando última respuesta")
+            total_time = time.time() - start_time
+            service_logger.info(f"Generación completada en {total_time:.2f}s tras {tries} intentos")
+            
+            return full_response, True, probability
     
-    # Se alcanzó el límite máximo de intentos
-    service_logger.warning(f"Límite de {max_tries} intentos alcanzado. Retornando última respuesta")
-    total_time = time.time() - start_time
-    service_logger.info(f"Generación completada en {total_time:.2f}s tras {tries} intentos")
-    
-    return full_response, True, probability
