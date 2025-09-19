@@ -36,7 +36,11 @@ async def upload_file(
     # Generar ID único para la solicitud
     request_id = str(uuid.uuid4())
     start_time = time.time()
-    
+    if file.size == None:
+        return JSONResponse(
+            content="El archivo no es valido!",
+            status_code=422,
+        )
     # Logging de la solicitud
     api_logger.info(
         f"Solicitud de subida de documento recibida [ID: {request_id}] - "
@@ -58,6 +62,7 @@ async def upload_file(
         )
     
     # Verificar la extensión del archivo
+        
     file_extension = os.path.splitext(file.filename)[1].lower()
     if file_extension not in [".pdf", ".docx"]:
         api_logger.warning(

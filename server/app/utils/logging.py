@@ -4,13 +4,11 @@ import sys
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 from app.config.config import log_directory, log_level, log_to_file
-
-# Crear directorio de logs si no existe
-log_dir = Path(log_directory)
-log_dir.mkdir(exist_ok=True)
+from datetime import date, datetime
 
 # Configuración básica del logger
 def setup_logger(name, custom_log_level=None):
+    
     """
     Configura y devuelve un logger con el nombre especificado.
     
@@ -21,6 +19,10 @@ def setup_logger(name, custom_log_level=None):
     Returns:
         Logger configurado
     """
+    now = datetime.now().strftime("%d-%m-%Y")
+    log_dir = Path(log_directory)
+    log_dir.mkdir(exist_ok=True)
+    
     # Determinar el nivel de logging basado en el entorno o el parámetro
     if custom_log_level is None:
         # Usar el nivel de log configurado en config.py
@@ -48,8 +50,9 @@ def setup_logger(name, custom_log_level=None):
         
         # Handler para archivo con rotación (solo si está habilitado)
         if log_to_file:
+            os.makedirs(log_dir / now, exist_ok=True)
             file_handler = RotatingFileHandler(
-                log_dir / f"{name.split('.')[-1]}.log",
+                log_dir / now /f"{name.split('.')[-1]}.log",
                 maxBytes=10*1024*1024,  # 10MB
                 backupCount=5
             )
