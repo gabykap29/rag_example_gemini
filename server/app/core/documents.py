@@ -172,9 +172,12 @@ def retrieve_questions(query, materia, unidad_tematica):
     try:
         vectorstore = get_vector_store_cuestions(materia, unidad_tematica)
         docs = vectorstore.similarity_search_with_score(query, k=10)
-        
+        print( "*" * 50)
+        print("Pregunta recibida: ", query)
+        print("Preguntas encontradas: ", docs)
+        print( "*" * 50)
         process_time = time.time() - start_time
-        if docs and docs[0][1] < 500:
+        if docs and docs[0][1] < 250:
             scores = docs[0][1]
             core_logger.info(f"Encontradas {len(docs)} preguntas similares en {process_time:.2f}s. Scores: {scores}")
             return docs, scores
