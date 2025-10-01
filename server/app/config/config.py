@@ -21,3 +21,8 @@ else:
 # Configuración de logging
 log_level = os.getenv("LOG_LEVEL", "INFO")
 log_to_file = os.getenv("LOG_TO_FILE", "True").lower() == "true"
+
+if os.getenv("MODEL_USER_OLLAMA") is None:
+    model_student = "medicina_usuario"
+else:
+    model_student = os.getenv("MODEL_USER_OLLAMA")

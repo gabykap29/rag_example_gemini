@@ -37,3 +37,7 @@ class GenerateResponse(BaseModel):
                 "response": "{\"Titulo\": \"Resolución de ecuaciones cuadráticas\", \"Consigna\": \"Resuelve las siguientes ecuaciones cuadráticas utilizando la fórmula general.\"}"
             }
         }
+
+class RequestStudent(BaseModel): 
+    contexto: str
+    question: str

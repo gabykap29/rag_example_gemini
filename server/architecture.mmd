@@ -1,0 +1,113 @@
+graph TB
+    %% Cliente
+    Client[🌐 Cliente Web/API]
+    
+    %% API Layer
+    subgraph API["🚀 API Layer (FastAPI)"]
+        GenerateEndpoint["/generate<br/>📝 Actividades Educativas"]
+        StudentEndpoint["/generate/student<br/>🎓 Asistente Educativo"]
+        DocumentsEndpoint["/documents/upload<br/>📄 Subida de Documentos"]
+    end
+    
+    %% Services Layer
+    subgraph Services["⚙️ Services Layer"]
+        GenerateService[generate_response<br/>🔄 Lógica de Generación]
+        AssistantService[generate_response_assistant<br/>🤖 Asistente Virtual]
+        DocumentsService[upload_document<br/>📂 Procesamiento de Docs]
+    end
+    
+    %% Core Layer
+    subgraph Core["🔧 Core Layer"]
+        ModelsCore[models.py<br/>🧠 LLM Integration]
+        DocumentsCore[documents.py<br/>📚 Gestión de Documentos]
+        VectorCore[vectorstore.py<br/>🔍 Vector Database]
+    end
+    
+    %% AI Models
+    subgraph AIModels["🤖 AI Models"]
+        Gemini[Google Gemini 2.0<br/>🌟 Modelo Principal]
+        Ollama[Ollama<br/>🦙 Modelo Local]
+        OllamaStudent[medicina_usuario<br/>👨‍🎓 Modelo Estudiante]
+    end
+    
+    %% Templates & Config
+    subgraph Config["⚙️ Configuration"]
+        CustomTemplate[custom_template<br/>📋 Plantilla Educativa]
+        UserTemplate[user_template<br/>🎯 Plantilla Asistente]
+        ConfigFile[config.py<br/>🔧 Configuración]
+        EnvFile[.env<br/>🔐 Variables de Entorno]
+    end
+    
+    %% Data Storage
+    subgraph Storage["💾 Data Storage"]
+        ChromaDB[(ChromaDB<br/>🔍 Vector Database)]
+        Documents[(Documents<br/>📁 PDF/DOCX Files)]
+        Logs[(Logs<br/>📊 Sistema de Logs)]
+    end
+    
+    %% Utils
+    subgraph Utils["🛠️ Utilities"]
+        Filters[filters.py<br/>🧹 Filtros de Texto]
+        Logging[logging.py<br/>📝 Sistema de Logs]
+        Probability[probability.py<br/>📈 Cálculo de Similitud]
+    end
+    
+    %% External Services
+    subgraph External["🌍 External Services"]
+        GoogleAPI[Google AI API<br/>🔗 Gemini Access]
+        OllamaAPI[Ollama API<br/>📡 Local LLM Server]
+    end
+    
+    %% Conexiones principales
+    Client --> API
+    
+    %% API to Services
+    GenerateEndpoint --> GenerateService
+    StudentEndpoint --> AssistantService
+    DocumentsEndpoint --> DocumentsService
+    
+    %% Services to Core
+    GenerateService --> ModelsCore
+    GenerateService --> DocumentsCore
+    AssistantService --> ModelsCore
+    DocumentsService --> DocumentsCore
+    DocumentsService --> VectorCore
+    
+    %% Core to Storage and External
+    ModelsCore --> AIModels
+    DocumentsCore --> ChromaDB
+    DocumentsCore --> Documents
+    VectorCore --> ChromaDB
+    
+    %% AI Models to External APIs
+    Gemini --> GoogleAPI
+    Ollama --> OllamaAPI
+    OllamaStudent --> OllamaAPI
+    
+    %% Configuration
+    ModelsCore --> Config
+    Core --> Utils
+    
+    %% Logging
+    API --> Logs
+    Services --> Logs
+    Core --> Logs
+    
+    %% Styling
+    classDef apiStyle fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef serviceStyle fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef coreStyle fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
+    classDef aiStyle fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef storageStyle fill:#fce4ec,stroke:#880e4f,stroke-width:2px
+    classDef configStyle fill:#f1f8e9,stroke:#33691e,stroke-width:2px
+    classDef utilStyle fill:#e0f2f1,stroke:#004d40,stroke-width:2px
+    classDef extStyle fill:#fafafa,stroke:#424242,stroke-width:2px
+    
+    class API apiStyle
+    class Services serviceStyle
+    class Core coreStyle
+    class AIModels aiStyle
+    class Storage storageStyle
+    class Config configStyle
+    class Utils utilStyle
+    class External extStyle
