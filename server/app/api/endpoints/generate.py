@@ -72,8 +72,15 @@ async def generate(request: GenerateRequest = Body(...)):
         raise
 
 @router.post("/student", status_code=200)
-def response_user(request: RequestStudent = Body(...)): 
-    # Generar ID único para la solicitud
+def response_user(request: RequestStudent = Body(...)):
+    """
+    Reformula el contexto y pregunta para el estudiante. Genera la siguiente estructura:
+    {
+        "contexto": "contexto reformulado",
+        "question": "pregunta reformulada"
+    }
+    """ 
+
     request_id = str(uuid.uuid4())
     start_time = time.time()
     try:         

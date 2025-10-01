@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request, File, Form, UploadFile, HTTPException, status
+from fastapi import APIRouter, File, Form, UploadFile, HTTPException, status
 from fastapi.responses import JSONResponse
 from app.services.documents import upload_document
 from app.models.documents import UploadResponse
@@ -36,7 +36,7 @@ async def upload_file(
     # Generar ID único para la solicitud
     request_id = str(uuid.uuid4())
     start_time = time.time()
-    if file.size == None:
+    if file.size is None:
         return JSONResponse(
             content="El archivo no es valido!",
             status_code=422,
@@ -63,6 +63,14 @@ async def upload_file(
     
     # Verificar la extensión del archivo
         
+    if not file.filename:
+        api_logger.warning(
+            f"Archivo rechazado por nombre de archivo vacío [ID: {request_id}]"
+        )
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="El archivo no tiene un nombre válido."
+        )
     file_extension = os.path.splitext(file.filename)[1].lower()
     if file_extension not in [".pdf", ".docx"]:
         api_logger.warning(
@@ -75,10 +83,7 @@ async def upload_file(
         )
     
     try:
-        # Procesar el documento
         result = upload_document(file, subject)
-        
-        # Calcular tiempo de procesamiento
         process_time = time.time() - start_time
         
         # Logging de la respuesta exitosa
@@ -89,7 +94,6 @@ async def upload_file(
             f"Tiempo: {process_time:.2f}s"
         )
         
-        # Devolver respuesta
         return UploadResponse(
             message=result["message"],
             file_name=result["file_name"],
