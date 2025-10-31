@@ -1,7 +1,3 @@
-import chunk
-from app.config.config import pdf_directory
-from langchain_community.vectorstores import Chroma
-from langchain_community.embeddings import OllamaEmbeddings
 from langchain_community.document_loaders import PDFPlumberLoader
 from langchain_community.document_loaders import Docx2txtLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -10,8 +6,8 @@ from app.core.vectorstore import get_vector_stores
 import hashlib
 import os
 import time
-from typing import List, Dict, Any
-from langchain.schema import Document
+from typing import List
+from langchain_core.documents import Document
 from app.utils.logging import core_logger
 
 
@@ -74,7 +70,7 @@ def index_docs(documents, materia):
         chunk_size = 1000,
         chunk_overlap = 100,
     )
-    core_logger.debug(f"Dividiendo documentos con chunk_size=1000, chunk_overlap=100")
+    core_logger.debug("Dividiendo documentos con chunk_size=1000, chunk_overlap=100")
     chunked_docs = text_splitter.split_documents(documents)
     core_logger.info(f"Documentos divididos en {len(chunked_docs)} fragmentos")
     
@@ -116,7 +112,7 @@ def is_document_already_indexed(file_path: str, materia: str) -> bool:
     
     try:
         vectorstore = get_vector_stores(materia)
-        core_logger.debug(f"Realizando búsqueda de similitud para verificar indexación")
+        core_logger.debug("Realizando búsqueda de similitud para verificar indexación")
         result = vectorstore.similarity_search(file_path, k=1)
         
         if result:

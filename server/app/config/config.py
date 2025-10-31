@@ -1,6 +1,30 @@
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_ollama import ChatOllama
 from dotenv import load_dotenv
+from pydantic import BaseModel
+from typing import Dict, Literal
 import os
+
+
+TipoDificultad = Literal["Baja", "Media", "Alta", "Muy Alta"]
+
+# De igual forma, la respuesta correcta debe ser una de las claves
+OpcionKey = Literal["A", "B", "C", "D"]
+
+# --- Clase Principal con BaseModel ---
+
+class OutpuParser(BaseModel):
+    """
+    Representa una pregunta (ítem) para una evaluación, 
+    validando su estructura con Pydantic.
+    """
+    Consigna: str
+    Contexto: str
+    DificultadItem: TipoDificultad
+    TiempoEstimado: str 
+    Opciones: str
+    VectorNivel: str
+    RespuestaCorrecta: OpcionKey
 
 load_dotenv()
 
@@ -18,6 +42,11 @@ if os.getenv("GEMINI_MODEL") is None:
 else: 
     model_gemini = os.getenv("GEMINI_MODEL")
 
+
+class OutputParserAssistantStudent(BaseModel):
+    concepto_consultado: str
+    respuesta: str
+    
 
 # Configuración de modelos
 model = os.getenv("MODEL")
@@ -42,3 +71,15 @@ gemini_model = ChatGoogleGenerativeAI(
             max_tokens=2000,
             google_api_key=api_key,
         )
+
+ollama_model = ChatOllama(
+            base_url= ollama_url,
+            model= "gpt-oss:20b-cloud",
+            temperature=0.5
+)
+
+OLLAMA_CONFIG_STUDENT = ollama_model.with_structured_output(OutputParserAssistantStudent)
+GEMINI_CONFIG_STUDENT = gemini_model.with_structured_output(OutputParserAssistantStudent)
+
+GEMINI_CONFIG_INSTRUCTOR = gemini_model.with_structured_output(OutpuParser)
+OLLAMA_CONFIG_INSTRUCTOR = ollama_model.with_structured_output(OutpuParser)

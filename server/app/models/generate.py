@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field
+from app.config.config import OutpuParser
 
 class GenerateRequest(BaseModel):
     context: str = "" 
@@ -27,7 +28,7 @@ class GenerateRequest(BaseModel):
 
 
 class GenerateResponse(BaseModel):
-    response: str
+    response: OutpuParser
     possibly_repeated: bool
     probability: float
     

@@ -1,7 +1,7 @@
 from app.config.config import pdf_directory
 from app.core.documents import is_document_already_indexed, load_document, index_docs, retrieve_docs
 import os
-from typing import Dict, Any, Optional
+from typing import Dict, Any
 from app.utils.logging import service_logger
 
 
