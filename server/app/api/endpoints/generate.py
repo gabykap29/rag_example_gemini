@@ -88,10 +88,10 @@ def response_user(request: RequestStudent = Body(...)):
         api_logger.info(
             f"Solicitud de generación recibida [ID: {request_id}] - "
             f"contexto: {request.contexto}, "
-            f"question: {request.question}"
+            f"question: {request.pregunta}"
         )
         
-        response = generate_response_assistant(contexto=request.contexto, question=request.question)
+        response = generate_response_assistant(contexto=request.contexto, question=request.pregunta)
         process_time = time.time() - start_time
 
         api_logger.info(

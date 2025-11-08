@@ -44,9 +44,9 @@ else:
 
 
 class OutputParserAssistantStudent(BaseModel):
-    concepto_consultado: str
-    respuesta: str
-    
+    contexto: str
+    pregunta: str
+    pista:str
 
 # Configuración de modelos
 model = os.getenv("MODEL")

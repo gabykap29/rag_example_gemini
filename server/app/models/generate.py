@@ -41,4 +41,4 @@ class GenerateResponse(BaseModel):
 
 class RequestStudent(BaseModel): 
     contexto: str
-    question: str
+    pregunta: str

@@ -76,7 +76,8 @@ def generate_response_student(contexto: str, question: str):
 
             chain = prompt | GEMINI_CONFIG_STUDENT
             response = chain.invoke(input_dict)
+
             return response
             
     except Exception as e: 
-        yield f"Error al obtener la respuesta del modelo: {e}"
+        raise Exception(f"Error al obtener la respuesta del modelo: {e}");
