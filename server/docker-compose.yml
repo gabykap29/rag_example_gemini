@@ -1,5 +1,5 @@
 version: '3.8'
-
+name: uplab-IA
 services:
   server:
     build:
@@ -12,6 +12,8 @@ services:
       - ./app/db:/app/app/db
     environment:
       - OLLAMA_HOST=http://ollama:11434
+    env_file:
+      - .env
     depends_on:
       - ollama
     networks:
