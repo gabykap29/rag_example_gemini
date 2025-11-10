@@ -5,7 +5,7 @@ from typing import Dict, Any
 from app.utils.logging import service_logger
 
 
-def upload_document(file, subject) -> Dict[str, Any]:
+async def upload_document(file, subject) -> Dict[str, Any]:
     """Sube un documento (PDF o DOCX) y lo indexa para su uso en RAG.
     
     Args:
@@ -56,7 +56,7 @@ def upload_document(file, subject) -> Dict[str, Any]:
         documents = load_document(file_path)
         service_logger.info(f"Documento cargado con {len(documents)} fragmentos. Indexando...")
         
-        index_docs(documents, subject)
+        await index_docs(documents, subject)
         service_logger.info(f"Documento indexado correctamente: {file.filename}")
         
         return {

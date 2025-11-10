@@ -51,7 +51,10 @@ def load_document(file_path: str) -> List[Document]:
         core_logger.info(f"Documento procesado: {file_path}")
         return documents
     except Exception as e:
-        core_logger.error(f"Error al cargar documento {file_path}: {str(e)}")
+        # Capturar el error sin intentar formatearlo directamente
+        error_type = type(e).__name__
+        error_msg = repr(e)  # Usar repr() en lugar de str() para evitar issues de formato
+        core_logger.error(f"Error al cargar documento {file_path}: [{error_type}] {error_msg}")
         raise
 
 # Mantener compatibilidad con código existente
@@ -59,7 +62,7 @@ def load_pdf(file):
     core_logger.debug(f"Llamada a función legacy load_pdf: {file}")
     return load_document(file)
 
-def index_docs(documents, materia):
+async def index_docs(documents, materia):
     core_logger.info(f"Indexando {len(documents)} documentos para materia: {materia}")
     vectorstore = get_vector_stores(materia)
     text_splitter = RecursiveCharacterTextSplitter(
@@ -71,7 +74,7 @@ def index_docs(documents, materia):
     core_logger.info(f"Documentos divididos en {len(chunked_docs)} fragmentos")
     
     core_logger.debug(f"Añadiendo documentos al vector store para materia: {materia}")
-    vectorstore.add_documents(chunked_docs)
+    await vectorstore.aadd_documents(chunked_docs)
     core_logger.debug(f"Persistiendo vector store para materia: {materia}")
     vectorstore.persist()
     

@@ -81,7 +81,7 @@ async def upload_file(
         )
     
     try:
-        result = upload_document(file, subject)
+        result = await upload_document(file, subject)
         process_time = time.time() - start_time
         
         # Logging de la respuesta exitosa
