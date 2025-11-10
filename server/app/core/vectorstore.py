@@ -1,9 +1,10 @@
 import re
 from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings import OllamaEmbeddings
+from app.config.config import model
 import chromadb
 import os
-from app.config.config import db_directory, ollama_url
+from app.config.config import db_directory, ollama_url, model_embedding_gemini
 
 
 def sanitize_name(name: str) -> str:
@@ -17,7 +18,7 @@ def sanitize_name(name: str) -> str:
 def get_vector_stores(materia: str):
     os.makedirs(db_directory, exist_ok=True)
     collection_name = sanitize_name(materia)
-    embeddings = OllamaEmbeddings(model="nomic-embed-text", base_url=ollama_url)
+    embeddings = model_embedding_gemini
     client = chromadb.PersistentClient(path=db_directory)
     
     return Chroma(
@@ -30,7 +31,7 @@ def get_vector_stores(materia: str):
 def get_vector_store_cuestions(materia: str, unidad_elemento: str):
     os.makedirs(db_directory, exist_ok=True)
     collection_name = sanitize_name(f"{materia}_{unidad_elemento}")
-    embeddings = OllamaEmbeddings(model="nomic-embed-text", base_url=ollama_url)
+    embeddings = model_embedding_gemini
     client = chromadb.PersistentClient(path=db_directory)
 
     return Chroma(

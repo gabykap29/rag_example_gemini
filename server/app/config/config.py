@@ -1,4 +1,5 @@
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_ollama import ChatOllama
 from dotenv import load_dotenv
 from pydantic import BaseModel
@@ -36,6 +37,11 @@ db_directory = "./app/db"
 log_directory = "./logs"
 
 model_gemini = os.getenv("GEMINI_MODEL")
+
+model_embedding_gemini = GoogleGenerativeAIEmbeddings(
+    google_api_key=api_key,
+    model="models/text-embedding-004"
+)
 
 if os.getenv("GEMINI_MODEL") is None: 
     model_gemini = "gemini-2.0-flash"
