@@ -28,7 +28,7 @@ def upload_document(file, subject) -> Dict[str, Any]:
     with open(file_path, "wb") as f:
         content = file.file.read()
         f.write(content)
-        service_logger.debug(f"Archivo guardado: {file_path} ({len(content)/1024:.2f} KB)")
+        service_logger.debug(f"Archivo guardado: {file_path})")
     
     # Obtener extensión del archivo
     file_extension = os.path.splitext(file_path)[1].lower()

@@ -24,7 +24,7 @@ async def upload_file(
     para su recuperación mediante búsqueda semántica.
     
     Parameters:
-    - **file**: Archivo PDF o DOCX a subir (máximo 10MB)
+    - **file**: Archivo PDF o DOCX a subir (máximo 50MB)
     - **subject**: Materia o asignatura relacionada con el documento
     
     Returns:
@@ -45,16 +45,14 @@ async def upload_file(
     api_logger.info(
         f"Solicitud de subida de documento recibida [ID: {request_id}] - "
         f"Archivo: {file.filename}, "
-        f"Tamaño: {file.size / 1024:.2f} KB, "
         f"Materia: {subject}"
     )
     
     # Verificar el tamaño del archivo (máximo 10MB)
-    max_size = 10 * 1024 * 1024  # 10MB en bytes
+    max_size = 50 * 1024 * 1024  # 50MB en bytes
     if file.size > max_size:
         api_logger.warning(
-            f"Archivo rechazado por tamaño [ID: {request_id}] - "
-            f"Tamaño: {file.size / 1024:.2f} KB (máximo: 10240 KB)"
+            f"Archivo rechazado por tamaño [ID: {request_id}]"
         )
         raise HTTPException(
             status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,

@@ -1,11 +1,10 @@
-from langchain_community.document_loaders import PDFPlumberLoader
+from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.document_loaders import Docx2txtLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from app.core.vectorstore import get_vector_store_cuestions
 from app.core.vectorstore import get_vector_stores
 import hashlib
 import os
-import time
 from typing import List
 from langchain_core.documents import Document
 from app.utils.logging import core_logger
@@ -20,15 +19,14 @@ def load_document(file_path: str) -> List[Document]:
     Returns:
         Lista de documentos procesados
     """
-    start_time = time.time()
     core_logger.info(f"Iniciando carga de documento: {file_path}")
     
     file_extension = os.path.splitext(file_path)[1].lower()
     core_logger.debug(f"Extensión del archivo: {file_extension}")
     
     if file_extension == '.pdf':
-        core_logger.info(f"Cargando documento PDF con PDFPlumberLoader: {file_path}")
-        loader = PDFPlumberLoader(file_path)
+        core_logger.info(f"Cargando documento PDF con PyPDFLoader: {file_path}")
+        loader = PyPDFLoader(file_path)
     elif file_extension == '.docx':
         core_logger.info(f"Cargando documento DOCX con Docx2txtLoader: {file_path}")
         loader = Docx2txtLoader(file_path)
@@ -50,8 +48,7 @@ def load_document(file_path: str) -> List[Document]:
             doc.metadata["file_path"] = file_path
             doc.metadata["file_extension"] = file_extension
         
-        process_time = time.time() - start_time
-        core_logger.info(f"Documento procesado en {process_time:.2f}s: {file_path}")
+        core_logger.info(f"Documento procesado: {file_path}")
         return documents
     except Exception as e:
         core_logger.error(f"Error al cargar documento {file_path}: {str(e)}")
@@ -63,7 +60,6 @@ def load_pdf(file):
     return load_document(file)
 
 def index_docs(documents, materia):
-    start_time = time.time()
     core_logger.info(f"Indexando {len(documents)} documentos para materia: {materia}")
     vectorstore = get_vector_stores(materia)
     text_splitter = RecursiveCharacterTextSplitter(
@@ -79,8 +75,7 @@ def index_docs(documents, materia):
     core_logger.debug(f"Persistiendo vector store para materia: {materia}")
     vectorstore.persist()
     
-    process_time = time.time() - start_time
-    core_logger.info(f"Indexación completada en {process_time:.2f}s para materia: {materia}")
+    core_logger.info(f"Indexación completada para materia: {materia}")
 
 
 def get_file_hash(file_path):
@@ -107,7 +102,6 @@ def is_document_already_indexed(file_path: str, materia: str) -> bool:
     Returns:
         True si el documento ya está indexado, False en caso contrario
     """
-    start_time = time.time()
     core_logger.info(f"Verificando si el documento ya está indexado: {file_path} en materia: {materia}")
     
     try:
@@ -122,12 +116,10 @@ def is_document_already_indexed(file_path: str, materia: str) -> bool:
                 core_logger.debug(f"Comparando hashes - Actual: {file_hash[:8]}... vs Encontrado: {doc_hash[:8] if doc_hash else 'None'}...")
                 
                 if doc_hash == file_hash:
-                    process_time = time.time() - start_time
-                    core_logger.info(f"Documento ya indexado (verificado en {process_time:.2f}s): {file_path}")
+                    core_logger.info(f"Documento ya indexado: {file_path}")
                     return True
         
-        process_time = time.time() - start_time
-        core_logger.info(f"Documento no indexado previamente (verificado en {process_time:.2f}s): {file_path}")
+        core_logger.info(f"Documento no indexado previamente: {file_path}")
         return False
     except Exception as e:
         core_logger.error(f"Error al verificar indexación: {str(e)}")
@@ -140,7 +132,6 @@ def is_pdf_already_indexed(file_path, materia):
 
 
 def retrieve_docs(query, coleccion):
-    start_time = time.time()
     core_logger.info(f"Recuperando documentos para consulta en colección: {coleccion}")
     core_logger.debug(f"Query: '{query[:50]}...' (truncada)")
     
@@ -148,12 +139,11 @@ def retrieve_docs(query, coleccion):
         vectorstore = get_vector_stores(coleccion)
         docs = vectorstore.similarity_search(query, k=5)
         
-        process_time = time.time() - start_time
         if docs:
-            core_logger.info(f"Recuperados {len(docs)} documentos en {process_time:.2f}s")
+            core_logger.info(f"Recuperados {len(docs)} documentos")
             return docs
         else:
-            core_logger.warning(f"No se encontraron documentos relevantes para la consulta en {process_time:.2f}s")
+            core_logger.warning("No se encontraron documentos relevantes para la consulta")
             return []
     except Exception as e:
         core_logger.error(f"Error al recuperar documentos: {str(e)}")
@@ -161,20 +151,18 @@ def retrieve_docs(query, coleccion):
 
 
 def retrieve_questions(query, materia, unidad_tematica):
-    start_time = time.time()
     core_logger.info(f"Verificando preguntas similares - Materia: {materia}, Unidad: {unidad_tematica}")
     core_logger.debug(f"Query: '{query[:50]}...' (truncada)")
     
     try:
         vectorstore = get_vector_store_cuestions(materia, unidad_tematica)
         docs = vectorstore.similarity_search_with_score(query, k=10)
-        process_time = time.time() - start_time
         if docs and docs[0][1] < 250:
             scores = docs[0][1]
-            core_logger.info(f"Encontradas {len(docs)} preguntas similares en {process_time:.2f}s. Scores: {scores}")
+            core_logger.info(f"Encontradas {len(docs)} preguntas similares")
             return docs, scores
         else:
-            core_logger.info(f"No se encontraron preguntas similares en {process_time:.2f}s")
+            core_logger.info("No se encontraron preguntas similares")
             return [], 501
     except Exception as e:
         core_logger.error(f"Error al recuperar preguntas: {str(e)}")
@@ -182,7 +170,6 @@ def retrieve_questions(query, materia, unidad_tematica):
 
 
 def index_questions(documents, materia, unidad_tematica):
-    start_time = time.time()
     core_logger.info(f"Indexando nueva pregunta - Materia: {materia}, Unidad: {unidad_tematica}")
     core_logger.debug(f"Contenido: '{documents[:50]}...' (truncado)")
     
@@ -191,8 +178,7 @@ def index_questions(documents, materia, unidad_tematica):
         vectorstore.add_documents([Document(page_content=documents)])
         vectorstore.persist()
         
-        process_time = time.time() - start_time
-        core_logger.info(f"Pregunta indexada correctamente en {process_time:.2f}s")
+        core_logger.info("Pregunta indexada correctamente")
     except Exception as e:
         core_logger.error(f"Error al indexar pregunta: {str(e)}")
         raise
