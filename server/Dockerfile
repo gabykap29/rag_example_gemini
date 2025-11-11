@@ -7,11 +7,12 @@ WORKDIR /app
 RUN pip install uv
 
 # Copiar archivos de requisitos
-COPY requirements.txt .
+COPY requirements-docker.txt .
 COPY prompt_system.txt .
+COPY prompt_system_student.txt .
 
 # Instalar dependencias usando uv
-RUN uv pip install --system -r requirements.txt
+RUN uv pip install --system -r requirements-docker.txt
 
 # Copiar el código de la aplicación
 COPY . .
