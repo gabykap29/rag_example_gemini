@@ -3,8 +3,8 @@ import os
 import sys
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
-from app.config.config import log_directory, log_level, log_to_file
-from datetime import date, datetime
+from app.core.settings import log_directory, log_level, log_to_file
+from datetime import datetime
 
 # Configuración básica del logger
 def setup_logger(name, custom_log_level=None):

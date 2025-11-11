@@ -1,7 +1,7 @@
 from langchain_core.prompts import ChatPromptTemplate
 from app.config.template import custom_template, user_template
-from app.config.config import GEMINI_CONFIG_STUDENT, OLLAMA_CONFIG_STUDENT, model, OLLAMA_CONFIG_INSTRUCTOR
-from app.config.config import GEMINI_CONFIG_INSTRUCTOR
+from app.core.settings import model
+from app.config.llm import GEMINI_CONFIG_STUDENT, OLLAMA_CONFIG_STUDENT, OLLAMA_CONFIG_INSTRUCTOR, GEMINI_CONFIG_INSTRUCTOR
 
 
 
@@ -80,4 +80,4 @@ def generate_response_student(contexto: str, question: str):
             return response
             
     except Exception as e: 
-        raise Exception(f"Error al obtener la respuesta del modelo: {e}");
+        raise Exception(f"Error al obtener la respuesta del modelo: {e}")
